@@ -1,1 +1,1 @@
-# mytexter
+# mytexter api server
