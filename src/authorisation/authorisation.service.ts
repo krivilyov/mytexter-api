@@ -51,10 +51,14 @@ export class AuthorisationService {
   private async validateUser(userDto: CreateUserDto) {
     const user = await this.userServise.getUserByEmail(userDto.email);
 
+    const errors = {
+      email: '',
+      password: '',
+    };
+
     if (!user) {
-      throw new UnauthorizedException({
-        message: 'Некорректный Email',
-      });
+      errors.email = 'There is no user with this E-mail';
+      throw new UnauthorizedException(errors);
     }
 
     const passwordEquals = await bcrypt.compare(
@@ -66,9 +70,8 @@ export class AuthorisationService {
       return user;
     }
 
-    throw new UnauthorizedException({
-      message: 'Некорректный пароль',
-    });
+    errors.password = 'Invalid password';
+    throw new UnauthorizedException(errors);
   }
 
   async getProfile(user: any) {
