@@ -19,7 +19,7 @@ export class AuthorisationService {
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
-    return this.generateToken(user);
+    return await this.generateToken(user);
   }
 
   async registration(userDto: CreateUserDto) {
@@ -43,9 +43,7 @@ export class AuthorisationService {
 
   private async generateToken(user: User) {
     const payload = { id: user.id, email: user.email, role: user.role };
-    return {
-      token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
   }
 
   private async validateUser(userDto: CreateUserDto) {

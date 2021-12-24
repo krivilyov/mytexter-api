@@ -5,17 +5,26 @@ import {
   UseGuards,
   Get,
   Request,
+  Res,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthorisationService } from './authorisation.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('/api/auth')
 export class AuthorisationController {
   constructor(private authorisationServise: AuthorisationService) {}
 
   @Post('/login')
-  login(@Body() userDto: CreateUserDto) {
+  async login(
+    @Body() userDto: CreateUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = await this.authorisationServise.login(userDto);
+
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
+    response.setHeader('Set-Cookie', cookie);
     return this.authorisationServise.login(userDto);
   }
 
