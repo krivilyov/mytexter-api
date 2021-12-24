@@ -25,12 +25,19 @@ export class AuthorisationController {
 
     const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
     response.setHeader('Set-Cookie', cookie);
-    return this.authorisationServise.login(userDto);
+    return { success: true };
   }
 
   @Post('/registration')
-  registration(@Body() userDto: CreateUserDto) {
-    return this.authorisationServise.registration(userDto);
+  async registration(
+    @Body() userDto: CreateUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const token = await this.authorisationServise.registration(userDto);
+
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
+    response.setHeader('Set-Cookie', cookie);
+    return { success: true };
   }
 
   @UseGuards(JwtAuthGuard)

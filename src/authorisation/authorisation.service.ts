@@ -23,13 +23,15 @@ export class AuthorisationService {
   }
 
   async registration(userDto: CreateUserDto) {
+    const errors = {
+      email: '',
+      password: '',
+    };
     const userCandidate = await this.userServise.getUserByEmail(userDto.email);
 
     if (userCandidate) {
-      throw new HttpException(
-        'Пользователь с таким Email уже существует',
-        HttpStatus.BAD_REQUEST,
-      );
+      errors.email = 'A user with this Email already exists';
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
     const hashPassword = await bcrypt.hash(userDto.password, 6);
