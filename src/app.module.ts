@@ -4,6 +4,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.model';
 import { AuthorisationModule } from './authorisation/authorisation.module';
+import { FileModule } from './file/file.module';
+import { FileService } from './file/file.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   imports: [
@@ -20,8 +24,13 @@ import { AuthorisationModule } from './authorisation/authorisation.module';
       models: [User],
       autoLoadModels: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
+    }),
     UsersModule,
     AuthorisationModule,
+    FileModule,
+    FileService,
   ],
 })
 export class AppModule {}

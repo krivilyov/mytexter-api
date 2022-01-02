@@ -5,6 +5,7 @@ interface UserCreationAttributes {
   email: string;
   password: string;
   role: string;
+  avatar: string;
 }
 
 @Table({ tableName: 'users' })
@@ -33,6 +34,12 @@ export class User extends Model<User, UserCreationAttributes> {
 
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  avatar: string;
 
   @Column({
     type: DataType.ENUM('customer', 'teacher', 'admin'),
