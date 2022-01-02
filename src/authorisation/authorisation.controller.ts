@@ -43,7 +43,6 @@ export class AuthorisationController {
   @Post('/logout')
   logout(@Res({ passthrough: true }) response: Response) {
     const cookie = `token='empty'; HttpOnly; Path=/; Max-Age=0`;
-    console.log(cookie);
     response.setHeader('Set-Cookie', cookie);
     return { success: true };
   }
