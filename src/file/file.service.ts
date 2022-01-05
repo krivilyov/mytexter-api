@@ -23,4 +23,14 @@ export class FileService {
       throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  removeFile(filePath: string) {
+    try {
+      const currentPath = path.resolve(__dirname, '..', 'static');
+      fs.unlinkSync(currentPath + '/' + filePath);
+      //file removed
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
