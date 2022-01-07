@@ -52,7 +52,6 @@ export class UsersService {
     let imagePath = '';
 
     if (file) {
-      console.log('filezzzzzzzzzzzz', file);
       imagePath = this.fileService.createFile(FileType.IMAGE, file);
       //remove old file
       if (user.avatar) {
@@ -85,6 +84,28 @@ export class UsersService {
 
     const updatedUser = await user.update(dataForUpdate);
     return updatedUser;
+  }
+
+  async removeUser(id: string) {
+    const userCandidate = await this.userRepository.findByPk(id);
+
+    if (!userCandidate) {
+      throw new HttpException('User is not exist', HttpStatus.BAD_REQUEST);
+    }
+
+    //delete file
+    if (userCandidate.avatar) {
+      this.fileService.removeFile(userCandidate.avatar);
+    }
+
+    await userCandidate
+      .destroy()
+      .then(() => {
+        return { message: 'Deleted successfully' };
+      })
+      .catch((error) => {
+        return error;
+      });
   }
 
   async getAllUsers() {

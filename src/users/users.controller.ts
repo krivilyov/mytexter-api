@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Put,
+  Delete,
   Body,
   UseGuards,
   UseInterceptors,
@@ -18,14 +19,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/api')
 export class UsersController {
-  constructor(private usersServise: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Get('/user/:id')
   getUser(@Param() params) {
     const id = Number(params.id);
-    return this.usersServise.getUserById(id);
+    return this.usersService.getUserById(id);
   }
 
   @Roles('admin')
@@ -36,7 +37,7 @@ export class UsersController {
     @Body() userDto: CreateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersServise.createUser(userDto, file);
+    return this.usersService.createUser(userDto, file);
   }
 
   @Roles('admin')
@@ -48,13 +49,20 @@ export class UsersController {
     @Body() userDto: UpdateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersServise.updateUser(Number(id), userDto, file);
+    return this.usersService.updateUser(Number(id), userDto, file);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Delete('/user/:id')
+  remove(@Param('id') id: string) {
+    return this.usersService.removeUser(id);
   }
 
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Get('/users')
   getAllUsers() {
-    return this.usersServise.getAllUsers();
+    return this.usersService.getAllUsers();
   }
 }
