@@ -7,7 +7,9 @@ import { AuthorisationModule } from './authorisation/authorisation.module';
 import { FileModule } from './file/file.module';
 import { FileService } from './file/file.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { TopicsModule } from './topics/topics.module';
 import * as path from 'path';
+import { Topic } from './topics/topic.model';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import * as path from 'path';
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User],
+      models: [User, Topic],
       autoLoadModels: true,
     }),
     ServeStaticModule.forRoot({
@@ -31,6 +33,7 @@ import * as path from 'path';
     AuthorisationModule,
     FileModule,
     FileService,
+    TopicsModule,
   ],
 })
 export class AppModule {}
