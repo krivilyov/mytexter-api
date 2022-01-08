@@ -10,6 +10,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TopicsModule } from './topics/topics.module';
 import * as path from 'path';
 import { Topic } from './topics/topic.model';
+import { LevelsModule } from './levels/levels.module';
+import { Level } from './levels/level.model';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { Topic } from './topics/topic.model';
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Topic],
+      models: [User, Topic, Level],
       autoLoadModels: true,
     }),
     ServeStaticModule.forRoot({
@@ -34,6 +36,7 @@ import { Topic } from './topics/topic.model';
     FileModule,
     FileService,
     TopicsModule,
+    LevelsModule,
   ],
 })
 export class AppModule {}
