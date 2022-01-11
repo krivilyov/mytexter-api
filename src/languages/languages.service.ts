@@ -1,0 +1,82 @@
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Language } from './language.model';
+import { CreateLanguageDto } from './dto/create-language.dto';
+import transliterate from '../helpers/transliteration';
+
+@Injectable()
+export class LanguagesService {
+  constructor(
+    @InjectModel(Language) private languageRepository: typeof Language,
+  ) {}
+
+  async createLanguage(dto: CreateLanguageDto) {
+    const errors = {
+      title: '',
+    };
+    const candidateLanguage = await this.getLanguageByTitle(dto.title);
+    if (candidateLanguage) {
+      errors.title = 'A language with this title already exists';
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    const alias = transliterate(dto.title.toLowerCase());
+    const language = await this.languageRepository.create({
+      ...dto,
+      alias: alias,
+    });
+    return language;
+  }
+
+  async getLanguageById(id: string) {
+    const language = this.languageRepository.findByPk(id);
+    return language;
+  }
+
+  async updateLanguage(id: string, dto: CreateLanguageDto) {
+    const errors = {
+      title: '',
+    };
+
+    const candidateLanguage = await this.getLanguageByTitle(dto.title);
+    //for change food -> Food
+    if (candidateLanguage && candidateLanguage.id !== Number(id)) {
+      errors.title = 'A language with this title already exists';
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    const language = await this.languageRepository.findByPk(id);
+    const alias = transliterate(dto.title.toLowerCase());
+    const updatedLanguage = await language.update({
+      alias: alias,
+      title: dto.title,
+      isActive: dto.isActive,
+    });
+    return updatedLanguage;
+  }
+
+  async deleteLanguage(id: string) {
+    const language = await this.languageRepository.findByPk(id);
+    if (!language) {
+      throw new HttpException('Language is not exist', HttpStatus.BAD_REQUEST);
+    }
+
+    await language
+      .destroy()
+      .then(() => {
+        return { message: 'Deleted successfully' };
+      })
+      .catch((error) => {
+        return error;
+      });
+  }
+
+  async getAllLanguages() {
+    const languages = await this.languageRepository.findAll();
+    return languages;
+  }
+
+  async getLanguageByTitle(title: string) {
+    const language = this.languageRepository.findOne({ where: { title } });
+    return language;
+  }
+}

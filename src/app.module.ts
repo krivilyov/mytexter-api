@@ -12,6 +12,8 @@ import * as path from 'path';
 import { Topic } from './topics/topic.model';
 import { LevelsModule } from './levels/levels.module';
 import { Level } from './levels/level.model';
+import { WordsModule } from './words/words.module';
+import { LanguagesModule } from './languages/languages.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { Level } from './levels/level.model';
     FileService,
     TopicsModule,
     LevelsModule,
+    WordsModule,
+    LanguagesModule,
   ],
 })
 export class AppModule {}
