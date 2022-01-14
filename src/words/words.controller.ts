@@ -1,4 +1,66 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Body,
+  UseGuards,
+  Param,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { Roles } from 'src/authorisation/roles.decorator';
+import { RolesGuard } from 'src/authorisation/guards/roles.guard';
+import { WordsService } from './words.service';
+import { CreateWordDto } from './dto/create-word.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('words')
-export class WordsController {}
+@Controller('/api')
+export class WordsController {
+  constructor(private wordsService: WordsService) {}
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Post('/word')
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @Body() dto: CreateWordDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.wordsService.createWord(dto, file);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Get('/word/:id')
+  getTopic(@Param('id') id: string) {
+    return this.wordsService.getWordById(id);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Put('/word/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() dto: CreateWordDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.wordsService.updateWord(id, dto, file);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Delete('/word/:id')
+  remove(@Param('id') id: string) {
+    return this.wordsService.removeWord(id);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Get('/words')
+  getAllUsers() {
+    return this.wordsService.getAllWords();
+  }
+}

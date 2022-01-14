@@ -48,7 +48,7 @@ export class TopicsController {
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Get('/topics')
-  getAllUsers() {
+  getAllTopics() {
     return this.topicsService.getAllTopics();
   }
 }
