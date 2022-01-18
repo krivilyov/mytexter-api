@@ -5,7 +5,6 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.model';
 import { AuthorisationModule } from './authorisation/authorisation.module';
 import { FileModule } from './file/file.module';
-import { FileService } from './file/file.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TopicsModule } from './topics/topics.module';
 import * as path from 'path';
@@ -36,7 +35,6 @@ import { LanguagesModule } from './languages/languages.module';
     UsersModule,
     AuthorisationModule,
     FileModule,
-    FileService,
     TopicsModule,
     LevelsModule,
     WordsModule,
