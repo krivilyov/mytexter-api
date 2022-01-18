@@ -5,6 +5,7 @@ import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import transliterate from '../helpers/transliteration';
 import { FileService, FileType } from 'src/file/file.service';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class WordsService {
@@ -97,5 +98,12 @@ export class WordsService {
   async getWordById(id: string) {
     const word = this.wordRepository.findByPk(id, { include: { all: true } });
     return word;
+  }
+
+  async getWordsByQuery(query: string) {
+    const words = await this.wordRepository.findAll({
+      where: { title: { [Op.like]: `%${query}%` } },
+    });
+    return words;
   }
 }

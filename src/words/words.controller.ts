@@ -9,6 +9,7 @@ import {
   Param,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { Roles } from 'src/authorisation/roles.decorator';
 import { RolesGuard } from 'src/authorisation/guards/roles.guard';
@@ -34,7 +35,7 @@ export class WordsController {
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Get('/word/:id')
-  getTopic(@Param('id') id: string) {
+  getWord(@Param('id') id: string) {
     return this.wordsService.getWordById(id);
   }
 
@@ -62,5 +63,12 @@ export class WordsController {
   @Get('/words')
   getAllUsers() {
     return this.wordsService.getAllWords();
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Get('/word/')
+  getWordByQuery(@Query('query') query: string) {
+    return this.wordsService.getWordsByQuery(query);
   }
 }

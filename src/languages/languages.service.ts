@@ -71,7 +71,9 @@ export class LanguagesService {
   }
 
   async getAllLanguages() {
-    const languages = await this.languageRepository.findAll();
+    const languages = await this.languageRepository.findAll({
+      where: { isActive: true },
+    });
     return languages;
   }
 
