@@ -48,7 +48,7 @@ export class LanguagesController {
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Get('/languages')
-  getAllUsers() {
+  getAllLanguages() {
     return this.languagesService.getAllLanguages();
   }
 }

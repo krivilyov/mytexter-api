@@ -102,6 +102,7 @@ export class WordsService {
 
   async getWordsByQuery(query: string) {
     const words = await this.wordRepository.findAll({
+      include: { all: true },
       where: { title: { [Op.like]: `%${query}%` } },
     });
     return words;

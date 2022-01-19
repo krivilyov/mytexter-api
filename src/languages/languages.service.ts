@@ -47,8 +47,8 @@ export class LanguagesService {
     const language = await this.languageRepository.findByPk(id);
     const alias = transliterate(dto.title.toLowerCase());
     const updatedLanguage = await language.update({
+      ...dto,
       alias: alias,
-      title: dto.title,
       isActive: dto.isActive,
     });
     return updatedLanguage;
@@ -71,9 +71,7 @@ export class LanguagesService {
   }
 
   async getAllLanguages() {
-    const languages = await this.languageRepository.findAll({
-      where: { isActive: true },
-    });
+    const languages = await this.languageRepository.findAll();
     return languages;
   }
 

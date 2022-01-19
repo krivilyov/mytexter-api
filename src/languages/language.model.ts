@@ -35,4 +35,10 @@ export class Language extends Model<Language, LanguageCreationAttributes> {
     defaultValue: 1,
   })
   isActive: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  code: string;
 }
