@@ -46,13 +46,23 @@ export class WordsService {
       if (wordCandidate.image) {
         this.fileService.removeFile(wordCandidate.image);
       }
+    } else {
+      imagePath = wordCandidate.image;
     }
 
+    //translations update
     if (dto.translations.length) {
-      const translationsId = JSON.parse('[' + dto.translations + ']');
-      translationsId.map((id: number) => {
-        wordCandidate.$remove('t_words', id);
-        wordCandidate.$set('t_words', id);
+      const translations = JSON.parse(dto.translations);
+      translations.map((word) => {
+        wordCandidate.$remove('t_words', word.id);
+        wordCandidate.$set('t_words', word.id);
+      });
+    } else {
+      wordCandidate.$get('t_words').then((res) => {
+        res.map((word) => {
+          const data = word.get({ plain: true });
+          wordCandidate.$remove('t_words', data.id);
+        });
       });
     }
 
@@ -82,12 +92,16 @@ export class WordsService {
 
     await word
       .destroy()
-      .then(() => {
-        return { message: 'Deleted successfully' };
-      })
+      .then()
       .catch((error) => {
         return error;
       });
+
+    const words = await this.wordRepository.findAll({
+      include: { all: true },
+    });
+
+    return words;
   }
 
   async getAllWords() {
@@ -96,7 +110,9 @@ export class WordsService {
   }
 
   async getWordById(id: string) {
-    const word = this.wordRepository.findByPk(id, { include: { all: true } });
+    const word = this.wordRepository.findByPk(id, {
+      include: { all: true, nested: true },
+    });
     return word;
   }
 
