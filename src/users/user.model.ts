@@ -4,8 +4,10 @@ interface UserCreationAttributes {
   name: string;
   email: string;
   password: string;
+  confirmHash: string;
   role: string;
   avatar: string;
+  isActive: number;
 }
 
 @Table({ tableName: 'users' })
@@ -40,6 +42,19 @@ export class User extends Model<User, UserCreationAttributes> {
     allowNull: true,
   })
   avatar: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  confirmHash: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  isActive: number;
 
   @Column({
     type: DataType.ENUM('customer', 'teacher', 'admin'),

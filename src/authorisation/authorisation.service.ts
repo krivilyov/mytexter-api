@@ -9,12 +9,15 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from 'src/users/user.model';
+import { v4 as uuidv4 } from 'uuid';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthorisationService {
   constructor(
     private userServise: UsersService,
     private jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async login(userDto: CreateUserDto) {
@@ -24,6 +27,7 @@ export class AuthorisationService {
 
   async registration(userDto: CreateUserDto) {
     const errors = {
+      name: '',
       email: '',
       password: '',
     };
@@ -35,10 +39,27 @@ export class AuthorisationService {
     }
 
     const hashPassword = await bcrypt.hash(userDto.password, 6);
+    const confirmHash = uuidv4();
+    const activationLink = `${process.env.API_URL}/api/auth/user-activate/${confirmHash}`;
+
     const user = await this.userServise.createUser({
       ...userDto,
+      confirmHash: confirmHash,
       password: hashPassword,
     });
+
+    this.mailerService
+      .sendMail({
+        to: userDto.email, // list of receivers
+        from: process.env.SMTP_USER, // sender address
+        subject: `Подтверждение аккаунта на сайте my-texter.com`,
+        text: '',
+        html: `<div><h1>Для активации аккаунта необходимо перейти по ссылке</h1><a href="${activationLink}">Активировать аккаунт</a></div>`,
+      })
+      .then()
+      .catch((errors) => {
+        console.log(errors);
+      });
 
     return this.generateToken(user);
   }
@@ -90,5 +111,15 @@ export class AuthorisationService {
     }
 
     return user;
+  }
+
+  async activateProfile(confirmHash: string) {
+    const user = await this.userServise.getUserByConfirmHash(confirmHash);
+    if (!user) {
+      throw new HttpException('User is not exist', HttpStatus.BAD_REQUEST);
+    }
+
+    const updatedUser = await user.update({ isActive: 1, confirmHash: 'NULL' });
+    return updatedUser;
   }
 }

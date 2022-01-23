@@ -13,6 +13,7 @@ import { LevelsModule } from './levels/levels.module';
 import { Level } from './levels/level.model';
 import { WordsModule } from './words/words.module';
 import { LanguagesModule } from './languages/languages.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -31,6 +32,19 @@ import { LanguagesModule } from './languages/languages.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
+    }),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT),
+          secure: false, // upgrade later with STARTTLS
+          auth: {
+            user: 'my.texter.mail.service@gmail.com',
+            pass: '**fF061977',
+          },
+        },
+      }),
     }),
     UsersModule,
     AuthorisationModule,

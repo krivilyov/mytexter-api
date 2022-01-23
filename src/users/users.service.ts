@@ -118,6 +118,11 @@ export class UsersService {
     return user;
   }
 
+  async getUserByConfirmHash(confirmHash: string) {
+    const user = this.userRepository.findOne({ where: { confirmHash } });
+    return user;
+  }
+
   async getUserById(id: number) {
     const user = this.userRepository.findByPk(id);
     return user;
