@@ -62,7 +62,6 @@ export class AuthorisationController {
 
   @Get('/user-activate/:confirmHash')
   async activateProfile(@Param('confirmHash') confirmHash: string, @Res() res) {
-    console.log(confirmHash);
     const user = await this.authorisationServise.activateProfile(confirmHash);
     if (user.isActive) {
       return res.redirect(

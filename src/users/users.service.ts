@@ -14,22 +14,11 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto, file?: any) {
-    const errors = {
-      email: '',
-      password: '',
-    };
     let imagePath = '';
 
     if (file) {
       imagePath = this.fileService.createFile(FileType.IMAGE, file);
     }
-
-    const userCandidate = await this.getUserByEmail(dto.email);
-    if (userCandidate) {
-      errors.email = 'A user with this Email already exists';
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
-    }
-
     const hashPassword = await bcrypt.hash(dto.password, 6);
 
     const user = await this.userRepository.create({
@@ -81,6 +70,7 @@ export class UsersService {
     }
 
     dataForUpdate.role = dto.role;
+    dataForUpdate.isActive = dto.isActive;
 
     const updatedUser = await user.update(dataForUpdate);
     return updatedUser;

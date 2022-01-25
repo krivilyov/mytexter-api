@@ -21,7 +21,24 @@ export class AuthorisationService {
   ) {}
 
   async login(userDto: CreateUserDto) {
+    const errors = {
+      email: '',
+    };
+
+    //validate email
+    const filterEmail =
+      /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!filterEmail.test(String(userDto.email).toLowerCase())) {
+      errors.email = 'It should be a valid email address';
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
     const user = await this.validateUser(userDto);
+    if (!user.isActive) {
+      errors.email = `You need to activate your account for mail ${user.email}`;
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
     return await this.generateToken(user);
   }
 
@@ -35,17 +52,41 @@ export class AuthorisationService {
 
     if (userCandidate) {
       errors.email = 'A user with this Email already exists';
+    }
+
+    //custom validate dto
+    //validate name
+    const filterName = /[a-zA-Z][a-zA-Z0-9-_]{3,10}/;
+    if (!filterName.test(String(userDto.name).toLowerCase())) {
+      errors.name =
+        'The name must be no shorter than 3 characters and no longer than 10';
+    }
+
+    //validate email
+    const filterEmail =
+      /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (!filterEmail.test(String(userDto.email).toLowerCase())) {
+      errors.email = 'It should be a valid email address';
+    }
+
+    //validate password
+    const filterPassword =
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/;
+    if (!filterPassword.test(String(userDto.password).toLowerCase())) {
+      errors.password =
+        'Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.';
+    }
+
+    if (errors.name.length || errors.email.length || errors.password.length) {
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
-    const hashPassword = await bcrypt.hash(userDto.password, 6);
     const confirmHash = uuidv4();
     const activationLink = `${process.env.API_URL}/api/auth/user-activate/${confirmHash}`;
 
     const user = await this.userServise.createUser({
       ...userDto,
       confirmHash: confirmHash,
-      password: hashPassword,
     });
 
     this.mailerService
