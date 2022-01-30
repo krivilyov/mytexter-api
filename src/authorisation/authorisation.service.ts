@@ -29,13 +29,13 @@ export class AuthorisationService {
     const filterEmail =
       /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if (!filterEmail.test(String(userDto.email).toLowerCase())) {
-      errors.email = 'It should be a valid email address';
+      errors.email = 'Это должен быть действительный адрес электронной почты';
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
     const user = await this.validateUser(userDto);
     if (!user.isActive) {
-      errors.email = `You need to activate your account for mail ${user.email}`;
+      errors.email = `Вам необходимо активировать свою учетную запись для почты ${user.email}`;
       throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -51,22 +51,22 @@ export class AuthorisationService {
     const userCandidate = await this.userServise.getUserByEmail(userDto.email);
 
     if (userCandidate) {
-      errors.email = 'A user with this Email already exists';
+      errors.email =
+        'Пользователь с этим адресом электронной почты уже существует';
     }
 
     //custom validate dto
     //validate name
-    const filterName = /[a-zA-Z][a-zA-Z0-9-_]{3,10}/;
+    const filterName = /[a-zA-Zа-яА-ЯёЁ0-9-_\.]{3,20}$/;
     if (!filterName.test(String(userDto.name).toLowerCase())) {
-      errors.name =
-        'The name must be no shorter than 3 characters and no longer than 10';
+      errors.name = 'Имя должно быть не короче 3 символов и не длиннее 10';
     }
 
     //validate email
     const filterEmail =
       /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if (!filterEmail.test(String(userDto.email).toLowerCase())) {
-      errors.email = 'It should be a valid email address';
+      errors.email = 'Это должен быть действительный адрес электронной почты';
     }
 
     //validate password
@@ -74,7 +74,7 @@ export class AuthorisationService {
       /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/;
     if (!filterPassword.test(String(userDto.password).toLowerCase())) {
       errors.password =
-        'Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character.';
+        'Пароль должен состоять из 6-12 символов и содержать не менее 1 буквы, 1 цифры и 1 специального символа.';
     }
 
     if (errors.name.length || errors.email.length || errors.password.length) {
@@ -111,6 +111,7 @@ export class AuthorisationService {
       name: user.name,
       email: user.email,
       role: user.role,
+      isActive: user.isActive,
     };
     return this.jwtService.sign(payload);
   }
@@ -124,7 +125,8 @@ export class AuthorisationService {
     };
 
     if (!user) {
-      errors.email = 'There is no user with this E-mail';
+      errors.email =
+        'Пользователь с этим адресом электронной почты не зарегистрирован';
       throw new UnauthorizedException(errors);
     }
 
@@ -137,7 +139,7 @@ export class AuthorisationService {
       return user;
     }
 
-    errors.password = 'Invalid password';
+    errors.password = 'Вы ввели неверный пароль';
     throw new UnauthorizedException(errors);
   }
 

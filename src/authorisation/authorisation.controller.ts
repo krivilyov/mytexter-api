@@ -34,17 +34,17 @@ export class AuthorisationController {
   @Post('/registration')
   async registration(
     @Body() userDto: CreateUserDto,
-    // @Res({ passthrough: true }) response: Response,
+    @Res({ passthrough: true }) response: Response,
   ) {
     const token = await this.authorisationServise.registration(userDto);
 
-    // const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
-    // response.setHeader('Set-Cookie', cookie);
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
+    response.setHeader('Set-Cookie', cookie);
     if (!token) {
       throw new HttpException('No registration', HttpStatus.BAD_REQUEST);
     }
 
-    return { success: true };
+    return token;
   }
 
   @Post('/logout')
@@ -65,7 +65,7 @@ export class AuthorisationController {
     const user = await this.authorisationServise.activateProfile(confirmHash);
     if (user.isActive) {
       return res.redirect(
-        `${process.env.CLIENT_URL}/registration/success/${user.id}`,
+        `${process.env.CLIENT_URL}/auth/activation-successful/`,
       );
     }
   }
