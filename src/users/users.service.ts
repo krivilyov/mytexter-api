@@ -113,6 +113,11 @@ export class UsersService {
     return user;
   }
 
+  async getUserByRestoreHash(restoreHash: string) {
+    const user = this.userRepository.findOne({ where: { restoreHash } });
+    return user;
+  }
+
   async getUserById(id: number) {
     const user = this.userRepository.findByPk(id);
     return user;

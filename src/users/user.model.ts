@@ -8,6 +8,7 @@ interface UserCreationAttributes {
   role: string;
   avatar: string;
   isActive: number;
+  restoreHash?: string;
 }
 
 @Table({ tableName: 'users' })
@@ -61,4 +62,10 @@ export class User extends Model<User, UserCreationAttributes> {
     defaultValue: 'customer',
   })
   role: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  restoreHash: string;
 }

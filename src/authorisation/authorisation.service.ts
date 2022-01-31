@@ -162,7 +162,86 @@ export class AuthorisationService {
       throw new HttpException('User is not exist', HttpStatus.BAD_REQUEST);
     }
 
-    const updatedUser = await user.update({ isActive: 1, confirmHash: 'NULL' });
+    const updatedUser = await user.update({ isActive: 1, confirmHash: null });
     return updatedUser;
+  }
+
+  async restorePassword(email: string) {
+    const userCandidate = await this.userServise.getUserByEmail(email);
+
+    if (!userCandidate) {
+      throw new HttpException(
+        'Пользователь с таким Email не найден',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const restoreHash = uuidv4();
+    const updatedUser = await userCandidate.update({
+      restoreHash: restoreHash,
+    });
+    const restoreLink = `${process.env.CLIENT_URL}/auth/repassword/${restoreHash}`;
+
+    this.mailerService
+      .sendMail({
+        to: updatedUser.email, // list of receivers
+        from: process.env.SMTP_USER, // sender address
+        subject: `Запрос на смену пароля для пользователя с Email ${updatedUser.email} на сайте my-texter.com`,
+        text: '',
+        html: `<div><h1>Для смены пароля необходимо перейти по ссылке</h1><a href="${restoreLink}">Сменить пароль</a></div>`,
+      })
+      .then()
+      .catch((errors) => {
+        console.log(errors);
+      });
+
+    if (updatedUser) {
+      return { success: true };
+    }
+  }
+
+  async checkUserForRestore(restoreHash: string) {
+    const user = await this.userServise.getUserByRestoreHash(restoreHash);
+
+    if (!user) {
+      throw new HttpException('Пользователь не найден', HttpStatus.BAD_REQUEST);
+    }
+
+    return user;
+  }
+
+  async changePassword(userDto: CreateUserDto) {
+    const errors = {
+      password: '',
+    };
+
+    //validate password
+    const filterPassword =
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,12}$/;
+    if (!filterPassword.test(String(userDto.password).toLowerCase())) {
+      errors.password =
+        'Пароль должен состоять из 6-12 символов и содержать не менее 1 буквы, 1 цифры и 1 специального символа.';
+    }
+
+    if (errors.password.length) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    const userCandidate = await this.userServise.getUserByRestoreHash(
+      userDto.restoreHash,
+    );
+
+    if (!userCandidate) {
+      throw new HttpException('Пользователь не найден', HttpStatus.BAD_REQUEST);
+    }
+
+    const hashPassword = await bcrypt.hash(userDto.password, 6);
+
+    await userCandidate.update({
+      password: hashPassword,
+      restoreHash: null,
+    });
+
+    return { success: true };
   }
 }

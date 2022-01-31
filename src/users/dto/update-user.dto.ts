@@ -6,4 +6,5 @@ export class UpdateUserDto {
   role?: string;
   avatar?: string;
   isActive?: number;
+  restoreHash?: string;
 }

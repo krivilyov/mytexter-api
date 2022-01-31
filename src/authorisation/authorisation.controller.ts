@@ -69,4 +69,20 @@ export class AuthorisationController {
       );
     }
   }
+
+  @Post('/restore')
+  restorePassword(@Body() userDto: CreateUserDto) {
+    return this.authorisationServise.restorePassword(userDto.email);
+  }
+
+  @Get('/amnesia-user/:restoreHash')
+  checkUserForRestore(@Param('restoreHash') restoreHash: string) {
+    return this.authorisationServise.checkUserForRestore(restoreHash);
+  }
+
+  @Post('/repassword')
+  changePassword(@Body() userDto: CreateUserDto) {
+    console.log(userDto);
+    return this.authorisationServise.changePassword(userDto);
+  }
 }
