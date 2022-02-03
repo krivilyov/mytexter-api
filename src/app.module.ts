@@ -28,7 +28,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       models: [User, Topic, Level],
-      autoLoadModels: true,
+      autoLoadModels: !!process.env.AUTO_LOAD_MODELS,
     }),
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
