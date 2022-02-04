@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  prod:
+  api:
     container_name: apimytexter_prod
     build:
       context: .
