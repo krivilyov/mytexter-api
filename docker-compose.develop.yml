@@ -8,13 +8,13 @@ services:
       dockerfile: ./Dockerfile
     restart: always
     env_file:
-      - .production.env
+      - .development.env
     volumes:
       - .:/app
       - /app/node_modules
     ports:
       - 9000:9000
-    command: npm run start
+    command: npm run start:dev
 
   #MySQL
   db:
@@ -25,8 +25,8 @@ services:
     environment:
       MYSQL_DATABASE: mytexter
       MYSQL_USER: mytexter
-      MYSQL_PASSWORD: xV1S1YQFLwL1
       MYSQL_ROOT_PASSWORD: ZVjS2YQaL6L1
+      MYSQL_PASSWORD: An0thrS3crt
 
     ports:
       - '3306:3306'
