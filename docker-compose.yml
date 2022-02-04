@@ -24,8 +24,6 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: mytexter
-      MYSQL_USER: mytexter
-      MYSQL_PASSWORD: xV1S1YQFLwL1
       MYSQL_ROOT_PASSWORD: ZVjS2YQaL6L1
 
     ports:
