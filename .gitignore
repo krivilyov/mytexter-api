@@ -37,3 +37,6 @@ build/config\.gypi
 
 #db
 /src/database/config.json
+
+.development.env
+.production.env
