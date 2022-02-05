@@ -1,19 +1,21 @@
-version: '2'
+version: '3.5'
 
 services:
   api:
-    container_name: apimytexter_prod
+    container_name: apimytexter_dev
     build:
       context: .
       dockerfile: ./Dockerfile
-    restart: always
     env_file:
       - .development.env
     volumes:
       - .:/app
       - /app/node_modules
     ports:
-      - 9000:9000
+      - 8000:8000
+    networks:
+      - net
+
     command: npm run start:dev
 
   #MySQL
@@ -21,7 +23,6 @@ services:
     image: mysql
     container_name: mysql
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
     environment:
       MYSQL_DATABASE: mytexter
       MYSQL_USER: mytexter
@@ -30,8 +31,14 @@ services:
 
     ports:
       - '3306:3306'
+    networks:
+      - net
     volumes:
       - dbdata:/var/lib/mysql
+
+networks:
+  net:
+    driver: bridge
 
 volumes:
   dbdata:
