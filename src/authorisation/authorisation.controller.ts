@@ -26,7 +26,7 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.login(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
     response.setHeader('Set-Cookie', cookie);
     return { success: true };
   }
@@ -38,7 +38,7 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.registration(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600`;
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
     response.setHeader('Set-Cookie', cookie);
     if (!token) {
       throw new HttpException('No registration', HttpStatus.BAD_REQUEST);
