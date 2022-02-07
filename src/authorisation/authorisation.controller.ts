@@ -27,7 +27,7 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.login(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; domain=${process.env.CLIENT_URL} SameSite=None`;
     response.setHeader('Set-Cookie', cookie);
     return { success: true };
   }
