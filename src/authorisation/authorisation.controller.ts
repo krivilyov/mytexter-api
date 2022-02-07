@@ -27,8 +27,13 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.login(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
-    response.setHeader('Set-Cookie', cookie);
+    // const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
+    response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 21600,
+      path: '/',
+    });
+    // response.setHeader('Set-Cookie', cookie);
     return { success: true };
   }
 
