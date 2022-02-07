@@ -30,7 +30,7 @@ export class AuthorisationController {
     // const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; SameSite=None; Secure`;
     response.cookie('token', token, {
       httpOnly: true,
-      maxAge: 21600,
+      maxAge: 21600000,
       path: '/',
     });
     // response.setHeader('Set-Cookie', cookie);
