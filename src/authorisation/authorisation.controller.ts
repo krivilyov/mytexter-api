@@ -21,7 +21,6 @@ export class AuthorisationController {
   constructor(private authorisationServise: AuthorisationService) {}
 
   @Post('/login')
-  @Header('Access-Control-Expose-Headers', 'Set-Cookie')
   async login(
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -34,7 +33,6 @@ export class AuthorisationController {
   }
 
   @Post('/registration')
-  @Header('Access-Control-Expose-Headers', 'Set-Cookie')
   async registration(
     @Body() userDto: CreateUserDto,
     @Res({ passthrough: true }) response: Response,
