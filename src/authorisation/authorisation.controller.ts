@@ -9,7 +9,6 @@ import {
   Param,
   HttpException,
   HttpStatus,
-  Header,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AuthorisationService } from './authorisation.service';
@@ -27,7 +26,7 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.login(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; Domain=my-texter.com; SameSite=None; Secure`;
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; Domain=${process.env.COOKIE_DOMAIN}; SameSite=None; Secure`;
     response.setHeader('Set-Cookie', cookie);
     return { success: true };
   }
@@ -39,7 +38,7 @@ export class AuthorisationController {
   ) {
     const token = await this.authorisationServise.registration(userDto);
 
-    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; Domain=my-texter.com; SameSite=None; Secure`;
+    const cookie = `token=${token}; HttpOnly; Path=/; Max-Age=21600; Domain=${process.env.COOKIE_DOMAIN}; SameSite=None; Secure`;
     response.setHeader('Set-Cookie', cookie);
     if (!token) {
       throw new HttpException('No registration', HttpStatus.BAD_REQUEST);

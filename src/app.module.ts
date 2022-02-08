@@ -31,7 +31,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       autoLoadModels: !!process.env.AUTO_LOAD_MODELS,
     }),
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, 'static'),
+      rootPath: path.resolve('./upload'),
     }),
     MailerModule.forRootAsync({
       useFactory: () => ({

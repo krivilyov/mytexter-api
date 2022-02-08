@@ -40,3 +40,5 @@ build/config\.gypi
 
 .development.env
 .production.env
+
+upload/*
