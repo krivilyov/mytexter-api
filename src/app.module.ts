@@ -11,9 +11,11 @@ import * as path from 'path';
 import { Topic } from './topics/topic.model';
 import { LevelsModule } from './levels/levels.module';
 import { Level } from './levels/level.model';
+import { Subscription } from './subscription/subscription.model';
 import { WordsModule } from './words/words.module';
 import { LanguagesModule } from './languages/languages.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       username: process.env.DB_USER_NAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Topic, Level],
+      models: [User, Topic, Level, Subscription],
       autoLoadModels: !!process.env.AUTO_LOAD_MODELS,
     }),
     ServeStaticModule.forRoot({
@@ -53,6 +55,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     LevelsModule,
     WordsModule,
     LanguagesModule,
+    SubscriptionModule,
   ],
 })
 export class AppModule {}
