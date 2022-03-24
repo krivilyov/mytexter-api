@@ -71,4 +71,11 @@ export class WordsController {
   getWordByQuery(@Query('query') query: string) {
     return this.wordsService.getWordsByQuery(query);
   }
+
+  @Roles('admin', 'customer')
+  @UseGuards(RolesGuard)
+  @Get('/words/filter/')
+  getWordsByFilterQuery(@Query() query) {
+    return this.wordsService.getWordsByFilterQuery(query);
+  }
 }

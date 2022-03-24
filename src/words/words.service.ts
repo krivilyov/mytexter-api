@@ -123,4 +123,53 @@ export class WordsService {
     });
     return words;
   }
+
+  async getWordsByFilterQuery(query) {
+    let configQuery = {};
+    const language_id = query.language_id ? query.language_id : 1;
+    const topic_id = query.topic_id ? query.topic_id : 1;
+
+    let level_id;
+    if (query.level_id) {
+      level_id = query.level_id;
+    } else {
+      level_id = 1;
+    }
+
+    const is_phrase = query.is_phrase ? query.is_phrase : 0;
+    const quantity: number = query.quantity ? Number(query.quantity) : 6;
+
+    if (level_id > 0) {
+      configQuery = {
+        language_id: language_id,
+        topic_id: topic_id,
+        level_id: level_id,
+        is_phrase: is_phrase,
+      };
+    } else {
+      configQuery = {
+        language_id: language_id,
+        topic_id: topic_id,
+        [Op.or]: [
+          { level_id: 1 },
+          { level_id: 2 },
+          { level_id: 3 },
+          { level_id: 4 },
+        ],
+        is_phrase: is_phrase,
+      };
+    }
+
+    const words = await this.wordRepository.findAll({
+      include: { all: true },
+      where: configQuery,
+      limit: quantity,
+    });
+
+    return words;
+  }
+}
+
+function getRandomId(min: number, max: number): any {
+  return Math.random() * (max - min) + min;
 }
