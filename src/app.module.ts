@@ -16,6 +16,7 @@ import { WordsModule } from './words/words.module';
 import { LanguagesModule } from './languages/languages.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { SubscriptionModule } from './subscription/subscription.module';
     WordsModule,
     LanguagesModule,
     SubscriptionModule,
+    TasksModule,
   ],
 })
 export class AppModule {}
