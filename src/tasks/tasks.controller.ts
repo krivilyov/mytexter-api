@@ -6,6 +6,7 @@ import {
   Delete,
   Body,
   Param,
+  Query,
 } from '@nestjs/common';
 import { Roles } from 'src/authorisation/roles.decorator';
 import { RolesGuard } from 'src/authorisation/guards/roles.guard';
@@ -33,7 +34,10 @@ export class TasksController {
   @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/tasks/:userId')
-  getTasksByUser(@Param('userId') userId: number) {
-    return this.tasksService.getTasksByUser(userId);
+  getTasksByUser(
+    @Param('userId') userId: number,
+    @Query('order') order: string = 'ASC',
+  ) {
+    return this.tasksService.getTasksByUser(userId, order);
   }
 }

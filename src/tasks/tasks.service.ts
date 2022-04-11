@@ -48,12 +48,13 @@ export class TasksService {
       });
   }
 
-  async getTasksByUser(userId: number) {
+  async getTasksByUser(userId: number, order: string) {
     const tasks = await this.taskRepository.findAll({
       include: { all: true, nested: true },
       where: {
         user_id: userId,
       },
+      order: [['id', order]],
     });
 
     return tasks;
