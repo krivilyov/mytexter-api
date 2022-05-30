@@ -36,8 +36,15 @@ export class TasksController {
   @Get('/tasks/:userId')
   getTasksByUser(
     @Param('userId') userId: number,
-    @Query('order') order: string = 'ASC',
+    @Query('order') order = 'ASC',
   ) {
     return this.tasksService.getTasksByUser(userId, order);
+  }
+
+  @Roles('admin', 'customer')
+  @UseGuards(RolesGuard)
+  @Get('/task/:id')
+  getTaskById(@Param('id') id: number) {
+    return this.tasksService.getTaskById(id);
   }
 }

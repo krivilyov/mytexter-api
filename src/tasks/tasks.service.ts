@@ -59,4 +59,15 @@ export class TasksService {
 
     return tasks;
   }
+
+  async getTaskById(id: number) {
+    const task = await this.taskRepository.findOne({
+      include: { all: true, nested: true },
+      where: {
+        id: id,
+      },
+    });
+
+    return task;
+  }
 }
