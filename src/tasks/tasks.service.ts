@@ -1,11 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Task } from './task.model';
+import { TaskWords } from './task-words.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateWordIntoTask } from './dto/update-word-into-task.dto';
 
 @Injectable()
 export class TasksService {
-  constructor(@InjectModel(Task) private taskRepository: typeof Task) {}
+  constructor(
+    @InjectModel(Task) private taskRepository: typeof Task,
+    @InjectModel(TaskWords) private taskWordsRepository: typeof TaskWords,
+  ) {}
 
   async createTask(dto: CreateTaskDto) {
     const errors = {
@@ -67,6 +72,50 @@ export class TasksService {
         id: id,
       },
     });
+
+    return task;
+  }
+
+  async updateWordIntoTask(dto: UpdateWordIntoTask) {
+    const taskWord = await this.taskWordsRepository.findOne({
+      where: {
+        task_id: dto.task_id,
+        word_id: dto.word_id,
+      },
+    });
+
+    const updatedTaskWord = await taskWord.update({
+      ...dto,
+    });
+
+    const task = await this.taskRepository.findOne({
+      include: { all: true, nested: true },
+      where: {
+        id: updatedTaskWord.task_id,
+      },
+    });
+
+    //check all words into task and set status
+    const taskWords = await this.taskWordsRepository.findAll({
+      where: {
+        task_id: dto.task_id,
+      },
+    });
+
+    const emptyDescription = taskWords.find(
+      (taskWord) => !taskWord.description,
+    );
+
+    //if all words have descriptions -> close this task
+    if (typeof emptyDescription === 'undefined') {
+      await task.update({
+        status: 1,
+      });
+    } else {
+      await task.update({
+        status: 0,
+      });
+    }
 
     return task;
   }

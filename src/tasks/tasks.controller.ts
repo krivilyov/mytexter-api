@@ -4,6 +4,7 @@ import {
   Post,
   Get,
   Delete,
+  Put,
   Body,
   Param,
   Query,
@@ -12,6 +13,7 @@ import { Roles } from 'src/authorisation/roles.decorator';
 import { RolesGuard } from 'src/authorisation/guards/roles.guard';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateWordIntoTask } from './dto/update-word-into-task.dto';
 
 @Controller('/api')
 export class TasksController {
@@ -46,5 +48,12 @@ export class TasksController {
   @Get('/task/:id')
   getTaskById(@Param('id') id: number) {
     return this.tasksService.getTaskById(id);
+  }
+
+  @Roles('admin')
+  @UseGuards(RolesGuard)
+  @Put('/task/update-word/')
+  updateWordIntoTask(@Body() dto: UpdateWordIntoTask) {
+    return this.tasksService.updateWordIntoTask(dto);
   }
 }

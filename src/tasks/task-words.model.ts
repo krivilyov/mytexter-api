@@ -34,4 +34,11 @@ export class TaskWords extends Model<TaskWords> {
     onUpdate: 'CASCADE',
   })
   word_id: number;
+
+  @Column({
+    type: DataType.TEXT,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  description: string;
 }
