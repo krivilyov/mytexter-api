@@ -6,6 +6,7 @@ import { Word } from './word.model';
 import { WordTranslations } from './word-translatios.model';
 import { AuthorisationModule } from '../authorisation/authorisation.module';
 import { FileService } from '../file/file.service';
+import { LanguagesModule } from '../languages/languages.module';
 
 @Module({
   controllers: [WordsController],
@@ -13,6 +14,7 @@ import { FileService } from '../file/file.service';
   imports: [
     SequelizeModule.forFeature([Word, WordTranslations]),
     AuthorisationModule,
+    LanguagesModule,
   ],
 })
 export class WordsModule {}

@@ -15,6 +15,7 @@ import { Roles } from 'src/authorisation/roles.decorator';
 import { RolesGuard } from 'src/authorisation/guards/roles.guard';
 import { WordsService } from './words.service';
 import { CreateWordDto } from './dto/create-word.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/api')
@@ -77,5 +78,12 @@ export class WordsController {
   @Get('/words/filter/')
   getWordsByFilterQuery(@Query() query) {
     return this.wordsService.getWordsByFilterQuery(query);
+  }
+
+  @Roles('admin', 'customer')
+  @UseGuards(RolesGuard)
+  @Get('/words/query')
+  getWordsByQuery(@Query() query: QuerySearchDto) {
+    return this.wordsService.getWordsBySearchQuery(query);
   }
 }

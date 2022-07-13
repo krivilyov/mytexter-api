@@ -79,4 +79,11 @@ export class LanguagesService {
     const language = this.languageRepository.findOne({ where: { title } });
     return language;
   }
+
+  async getLanguageByCode(code: string) {
+    const language = await this.languageRepository.findOne({
+      where: { code: code },
+    });
+    return language;
+  }
 }

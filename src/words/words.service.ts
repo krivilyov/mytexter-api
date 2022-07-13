@@ -3,14 +3,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Word } from '../words/word.model';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
+import { QuerySearchDto } from './dto/query-search.dto';
 import transliterate from '../helpers/transliteration';
 import { FileService, FileType } from 'src/file/file.service';
+import { LanguagesService } from '../languages/languages.service';
 import { Op } from 'sequelize';
 
 @Injectable()
 export class WordsService {
   constructor(
     @InjectModel(Word) private wordRepository: typeof Word,
+    private languagesServise: LanguagesService,
     private fileService: FileService,
   ) {}
 
@@ -164,6 +167,18 @@ export class WordsService {
       include: { all: true },
       where: configQuery,
       limit: quantity,
+    });
+
+    return words;
+  }
+
+  async getWordsBySearchQuery(query: QuerySearchDto) {
+    console.log(query);
+    const lang = await this.languagesServise.getLanguageByCode(query.lang);
+
+    const words = await this.wordRepository.findAll({
+      include: { all: true },
+      where: { title: { [Op.like]: `%${query.query}%` }, language_id: lang.id },
     });
 
     return words;
