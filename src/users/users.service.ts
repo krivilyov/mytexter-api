@@ -34,6 +34,7 @@ export class UsersService {
       email: '',
     };
 
+    //TO DO какая-то хрень с потрошением дто, нужно переписать
     const dataForUpdate: UpdateUserDto = {};
 
     const user = await this.userRepository.findByPk(id);
@@ -71,6 +72,8 @@ export class UsersService {
 
     dataForUpdate.role = dto.role;
     dataForUpdate.isActive = dto.isActive;
+    dataForUpdate.userLang = dto.userLang;
+    dataForUpdate.learningLang = dto.learningLang;
 
     const updatedUser = await user.update(dataForUpdate);
     return updatedUser;

@@ -9,6 +9,8 @@ interface UserCreationAttributes {
   avatar: string;
   isActive: number;
   restoreHash?: string;
+  userLang?: number;
+  learningLang?: number;
 }
 
 @Table({ tableName: 'users' })
@@ -68,4 +70,16 @@ export class User extends Model<User, UserCreationAttributes> {
     allowNull: true,
   })
   restoreHash: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 3,
+  })
+  userLang: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 1,
+  })
+  learningLang: number;
 }

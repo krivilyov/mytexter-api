@@ -7,4 +7,6 @@ export class CreateUserDto {
   readonly role: string;
   readonly isActive: number;
   readonly restoreHash?: string;
+  readonly userLang: number;
+  readonly learningLang: number;
 }

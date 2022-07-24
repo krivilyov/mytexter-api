@@ -7,7 +7,7 @@ import { QuerySearchDto } from './dto/query-search.dto';
 import transliterate from '../helpers/transliteration';
 import { FileService, FileType } from 'src/file/file.service';
 import { LanguagesService } from '../languages/languages.service';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 @Injectable()
 export class WordsService {
@@ -129,7 +129,7 @@ export class WordsService {
 
   async getWordsByFilterQuery(query) {
     let configQuery = {};
-    const language_id = query.language_id ? query.language_id : 1;
+    const language_id = query.learningLang;
     const topic_id = query.topic_id ? query.topic_id : 1;
 
     let level_id;
@@ -167,13 +167,13 @@ export class WordsService {
       include: { all: true },
       where: configQuery,
       limit: quantity,
+      order: [Sequelize.fn('RAND')],
     });
 
     return words;
   }
 
   async getWordsBySearchQuery(query: QuerySearchDto) {
-    console.log(query);
     const lang = await this.languagesServise.getLanguageByCode(query.lang);
 
     const words = await this.wordRepository.findAll({

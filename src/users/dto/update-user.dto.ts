@@ -7,4 +7,6 @@ export class UpdateUserDto {
   avatar?: string;
   isActive?: number;
   restoreHash?: string;
+  userLang?: number;
+  learningLang?: number;
 }
