@@ -174,17 +174,14 @@ export class WordsService {
   }
 
   async getWordsBySearchQuery(query: QuerySearchDto) {
-    const lang = await this.languagesServise.getLanguageByCode(query.lang);
-
     const words = await this.wordRepository.findAll({
       include: { all: true },
-      where: { title: { [Op.like]: `%${query.query}%` }, language_id: lang.id },
+      where: {
+        title: { [Op.like]: `%${query.query}%` },
+        language_id: query.lang,
+      },
     });
 
     return words;
   }
-}
-
-function getRandomId(min: number, max: number): any {
-  return Math.random() * (max - min) + min;
 }
