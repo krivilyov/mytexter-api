@@ -101,7 +101,7 @@ export class WordsService {
       });
 
     const words = await this.wordRepository.findAll({
-      include: { all: true },
+      include: { all: true, nested: true },
     });
 
     return words;
@@ -121,7 +121,7 @@ export class WordsService {
 
   async getWordsByQuery(query: string) {
     const words = await this.wordRepository.findAll({
-      include: { all: true },
+      include: { all: true, nested: true },
       where: { title: { [Op.like]: `%${query}%` } },
     });
     return words;
@@ -164,7 +164,7 @@ export class WordsService {
     }
 
     const words = await this.wordRepository.findAll({
-      include: { all: true },
+      include: { all: true, nested: true },
       where: configQuery,
       limit: quantity,
       order: [Sequelize.fn('RAND')],
@@ -175,7 +175,7 @@ export class WordsService {
 
   async getWordsBySearchQuery(query: QuerySearchDto) {
     const words = await this.wordRepository.findAll({
-      include: { all: true },
+      include: { all: true, nested: true },
       where: {
         title: { [Op.like]: `%${query.query}%` },
         language_id: query.lang,
