@@ -4,6 +4,7 @@ interface LanguageCreationAttributes {
   alias: string;
   title: string;
   isActive: number;
+  img: string;
 }
 
 @Table({ tableName: 'languages' })
@@ -41,4 +42,10 @@ export class Language extends Model<Language, LanguageCreationAttributes> {
     allowNull: false,
   })
   code: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  img: string;
 }

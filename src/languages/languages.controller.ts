@@ -8,10 +8,13 @@ import {
   Body,
   UseGuards,
   Param,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { LanguagesService } from './languages.service';
 import { RolesGuard } from 'src/authorisation/guards/roles.guard';
 import { CreateLanguageDto } from './dto/create-language.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/')
 export class LanguagesController {
@@ -20,8 +23,12 @@ export class LanguagesController {
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Post('/language')
-  create(@Body() dto: CreateLanguageDto) {
-    return this.languagesService.createLanguage(dto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @Body() dto: CreateLanguageDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.languagesService.createLanguage(dto, file);
   }
 
   @Roles('admin')
@@ -34,8 +41,13 @@ export class LanguagesController {
   @Roles('admin')
   @UseGuards(RolesGuard)
   @Put('/language/:id')
-  update(@Param('id') id: string, @Body() dto: CreateLanguageDto) {
-    return this.languagesService.updateLanguage(id, dto);
+  @UseInterceptors(FileInterceptor('file'))
+  update(
+    @Param('id') id: string,
+    @Body() dto: CreateLanguageDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.languagesService.updateLanguage(id, dto, file);
   }
 
   @Roles('admin')
