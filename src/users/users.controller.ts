@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/user/:id')
   getUser(@Param() params) {

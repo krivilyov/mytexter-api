@@ -24,7 +24,7 @@ export class LevelsController {
     return this.levelsService.createLevel(dto);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/level/:id')
   getTopic(@Param('id') id: string) {
@@ -45,7 +45,7 @@ export class LevelsController {
     return this.levelsService.deleteLevel(id);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/levels')
   getAllUsers() {

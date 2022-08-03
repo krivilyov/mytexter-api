@@ -50,7 +50,7 @@ export class TasksController {
     return this.tasksService.getTaskById(id);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Put('/task/update-word/')
   updateWordIntoTask(@Body() dto: UpdateWordIntoTask) {

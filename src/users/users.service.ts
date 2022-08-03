@@ -123,6 +123,7 @@ export class UsersService {
 
   async getUserById(id: number) {
     const user = this.userRepository.findByPk(id);
+    console.log('user', user);
     return user;
   }
 }

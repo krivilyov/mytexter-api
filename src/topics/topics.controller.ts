@@ -45,7 +45,7 @@ export class TopicsController {
     return this.topicsService.deleteTopic(id);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/topics')
   getAllTopics() {

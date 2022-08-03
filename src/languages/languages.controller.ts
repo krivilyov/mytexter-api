@@ -31,7 +31,7 @@ export class LanguagesController {
     return this.languagesService.createLanguage(dto, file);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/language/:id')
   getTopic(@Param('id') id: string) {
@@ -57,7 +57,7 @@ export class LanguagesController {
     return this.languagesService.deleteLanguage(id);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Get('/languages')
   getAllLanguages() {
