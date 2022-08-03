@@ -40,7 +40,7 @@ export class UsersController {
     return this.usersService.createUser(userDto, file);
   }
 
-  @Roles('admin')
+  @Roles('admin', 'customer')
   @UseGuards(RolesGuard)
   @Put('/user/:id')
   @UseInterceptors(FileInterceptor('file'))
