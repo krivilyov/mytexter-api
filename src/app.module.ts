@@ -41,10 +41,10 @@ import { TasksModule } from './tasks/tasks.module';
         transport: {
           host: process.env.SMTP_HOST,
           port: Number(process.env.SMTP_PORT),
-          secure: false, // upgrade later with STARTTLS
+          secure: true, // upgrade later with STARTTLS
           auth: {
-            user: 'my.texter.mail.service@gmail.com',
-            pass: '**fF061977',
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD,
           },
         },
       }),
